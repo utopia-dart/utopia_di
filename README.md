@@ -17,11 +17,26 @@ dependencies:
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+It's very simple to use. Use it by creating a instance or use a singleton instance from the library.
 
 ```dart
-const like = 'sample';
+import 'package:utopia_di/utopia_di.dart';
+
+final di = DI(); //you can also use `DI.instance` or `DI.i`
+
+void main() {
+  di.setResource('resource1', () => 'this is resource 1');
+  di.setResource('number1', () => 10);
+  di.setResource(
+    'dependentResource',
+    (String resource1, int number1) => '$resource1 and $number1',
+    injections: ['resource1', 'number1'],
+  );
+
+  print(di.getResource('resource1'));
+  print(di.getResource('number1'));
+  print(di.getResource('dependentResource'));
+}
 ```
 
 ## Copyright and license
