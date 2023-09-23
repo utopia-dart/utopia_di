@@ -10,7 +10,7 @@ class DI {
 
   static DI get i => DI.instance;
 
-  void setResource(
+  void set(
     String name,
     Function callback, {
     List<String> injections = const [],
@@ -19,15 +19,17 @@ class DI {
         _ResourceCallback(name, injections, callback, reset: true);
   }
 
-  Map<String, dynamic> getResources(List<String> names) {
+  Map<String, dynamic> getAll(List<String> names) {
     final resources = <String, dynamic>{};
     for (final name in names) {
-      resources[name] = getResource(name);
+      resources[name] = get(name);
     }
     return resources;
   }
 
-  dynamic getResource(String name, {bool fresh = false}) {
+  dynamic g(String name, { bool fresh = false}) => get(name, fresh: fresh);
+
+  dynamic get(String name, {bool fresh = false}) {
     if (_resources[name] == null ||
         fresh ||
         (_resourceCallbacks[name]?.reset ?? true)) {
@@ -35,7 +37,7 @@ class DI {
         throw Exception('Failed to find resource: "$name"');
       }
 
-      final params = getResources(_resourceCallbacks[name]!.injections);
+      final params = getAll(_resourceCallbacks[name]!.injections);
       _resources[name] = Function.apply(
         _resourceCallbacks[name]!.callback,
         [...params.values],
