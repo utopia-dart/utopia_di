@@ -27,7 +27,7 @@ class DI {
     return resources;
   }
 
-  dynamic g(String name, { bool fresh = false}) => get(name, fresh: fresh);
+  dynamic g(String name, {bool fresh = false}) => get(name, fresh: fresh);
 
   dynamic get(String name, {bool fresh = false}) {
     if (_resources[name] == null ||
