@@ -27,9 +27,9 @@ class DI {
     return resources;
   }
 
-  dynamic g(String name, {bool fresh = false}) => get(name, fresh: fresh);
+  dynamic g<T>(String name, {bool fresh = false}) => get<T>(name, fresh: fresh);
 
-  dynamic get(String name, {bool fresh = false}) {
+  dynamic get<T>(String name, {bool fresh = false}) {
     if (_resources[name] == null ||
         fresh ||
         (_resourceCallbacks[name]?.reset ?? true)) {
@@ -44,7 +44,11 @@ class DI {
       );
     }
     _resourceCallbacks[name] = _resourceCallbacks[name]!.copyWith(reset: false);
-    return _resources[name];
+    final resource = _resources[name];
+    if (resource is T) {
+      return resource;
+    }
+    throw Exception('Resource type doesn\'t match');
   }
 
   void reset() {

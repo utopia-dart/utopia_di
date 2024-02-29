@@ -4,8 +4,8 @@ version: 0.0.2
 repository: https://github.com/utopia-dart/utopia_di
 
 environment:
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: '>=2.19.2 <4.0.0'
 
 dev_dependencies:
-  lints: ^2.1.1
-  test: ^1.24.6
+  lints: ^3.0.0
+  test: ^1.25.2
