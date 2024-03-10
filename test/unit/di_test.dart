@@ -13,7 +13,10 @@ void main() async {
   );
   di.set('second', () => 'second');
 
-  group('App', () {
+  di.set('second', () => 'another second', context: 'another');
+  di.set('third', () => 'another third', context: 'another');
+
+  group('Utopia DI', () {
     test('resource', () async {
       expect(di.get('second'), 'second');
       expect(di.get('first'), 'first-second');
@@ -22,6 +25,21 @@ void main() async {
       expect(di.get('rand'), resource);
       expect(di.get('rand'), resource);
       expect(di.get('rand'), resource);
+    });
+
+    test('context resource', () async {
+      expect(di.get('second', context: 'another'), 'another second');
+      expect(di.get('third', context: 'another'), 'another third');
+      expect(
+        () => di.get('third'),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            '',
+            'Exception: Failed to find resource: "third"',
+          ),
+        ),
+      );
     });
   });
 }

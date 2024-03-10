@@ -1,7 +1,8 @@
 class DI {
   static DI? _instance;
-  final Map<String, dynamic> _resources = {};
-  static final Map<String, _ResourceCallback> _resourceCallbacks = {};
+  final Map<String, Map<String, dynamic>> _resources = {};
+  static final Map<String, Map<String, _ResourceCallback>> _resourceCallbacks =
+      {};
 
   static DI get instance {
     _instance ??= DI();
@@ -14,37 +15,48 @@ class DI {
     String name,
     Function callback, {
     List<String> injections = const [],
+    String context = 'utopia',
   }) {
-    _resourceCallbacks[name] =
+    _resourceCallbacks[context] ??= {};
+    _resourceCallbacks[context]![name] =
         _ResourceCallback(name, injections, callback, reset: true);
   }
 
-  Map<String, dynamic> getAll(List<String> names) {
+  Map<String, dynamic> getAll(List<String> names, {String context = 'utopia'}) {
     final resources = <String, dynamic>{};
     for (final name in names) {
-      resources[name] = get(name);
+      resources[name] = get(name, context: context);
     }
     return resources;
   }
 
   dynamic g<T>(String name, {bool fresh = false}) => get<T>(name, fresh: fresh);
 
-  dynamic get<T>(String name, {bool fresh = false}) {
-    if (_resources[name] == null ||
+  dynamic get<T>(String name, {String context = 'utopia', bool fresh = false}) {
+    _resources[context] ??= <String, dynamic>{};
+    _resourceCallbacks[context] ??= {};
+
+    final resources = _resources[context]!;
+    var resourceCallbacks = _resourceCallbacks[context]!;
+    if (resourceCallbacks.isEmpty || resourceCallbacks[name] == null) {
+      // use default context when not found in the context
+      resourceCallbacks = _resourceCallbacks['utopia'] ?? {};
+    }
+    if (resources[name] == null ||
         fresh ||
-        (_resourceCallbacks[name]?.reset ?? true)) {
-      if (_resourceCallbacks[name] == null) {
+        (resourceCallbacks[name]?.reset ?? true)) {
+      if (resourceCallbacks[name] == null) {
         throw Exception('Failed to find resource: "$name"');
       }
 
-      final params = getAll(_resourceCallbacks[name]!.injections);
-      _resources[name] = Function.apply(
-        _resourceCallbacks[name]!.callback,
+      final params = getAll(resourceCallbacks[name]!.injections);
+      resources[name] = Function.apply(
+        resourceCallbacks[name]!.callback,
         [...params.values],
       );
     }
-    _resourceCallbacks[name] = _resourceCallbacks[name]!.copyWith(reset: false);
-    final resource = _resources[name];
+    resourceCallbacks[name] = resourceCallbacks[name]!.copyWith(reset: false);
+    final resource = resources[name];
     if (resource is T) {
       return resource;
     }
