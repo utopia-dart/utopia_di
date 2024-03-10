@@ -37,7 +37,11 @@ class DI {
     _resourceCallbacks[context] ??= {};
 
     final resources = _resources[context]!;
-    final resourceCallbacks = _resourceCallbacks[context]!;
+    var resourceCallbacks = _resourceCallbacks[context]!;
+    if (resourceCallbacks.isEmpty || resourceCallbacks[name] == null) {
+      // use default context when not found in the context
+      resourceCallbacks = _resourceCallbacks['utopia'] ?? {};
+    }
     if (resources[name] == null ||
         fresh ||
         (resourceCallbacks[name]?.reset ?? true)) {
