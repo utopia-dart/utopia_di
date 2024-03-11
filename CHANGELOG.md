@@ -2,6 +2,7 @@
 
 - Improve library namings
 - Fixes for reset methods
+- Add doc comments
 - Support context while resetting cached resources
 
 ## 0.1.0

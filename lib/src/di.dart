@@ -1,10 +1,10 @@
 import 'resource_callback.dart';
 
 /// Dependency injection
-/// 
+///
 /// Simple and easy dependency injection
 /// for your Dart applications.
-/// 
+///
 /// Part of Utopia Dart ecosystem,
 /// but can be used independently.
 class DI {

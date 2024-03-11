@@ -1,4 +1,4 @@
-
+/// Resource callback
 class ResourceCallback {
   final String name;
   final List<String> injections;
