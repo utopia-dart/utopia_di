@@ -1,6 +1,6 @@
 name: utopia_di
 description: Light & Fast Dart Dependency Injection library. Easy to use and powerful for all kinds of needs, with no external dependencies.
-version: 0.1.0
+version: 0.2.0
 repository: https://github.com/utopia-dart/utopia_di
 
 environment:
