@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Fix issues caused by static properties
+
 ## 0.2.0
 
 - Improve library namings
