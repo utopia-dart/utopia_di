@@ -11,8 +11,7 @@ class DI {
   static const defaultContext = 'utopia';
   static DI? _instance;
   final Map<String, Map<String, dynamic>> _resources = {};
-  static final Map<String, Map<String, ResourceCallback>> _resourceCallbacks =
-      {};
+  final Map<String, Map<String, ResourceCallback>> _resourceCallbacks = {};
 
   /// Get singleton instance
   static DI get instance {
