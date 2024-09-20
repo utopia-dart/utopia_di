@@ -5,16 +5,16 @@ import 'package:utopia_di/utopia_di.dart';
 
 void main() async {
   final di = DI();
-  di.set('rand', () => Random().nextInt(100));
-  di.set(
+  di.set(D('rand', () => Random().nextInt(100)));
+  di.set(D(
     'first',
     (String second) => 'first-$second',
-    injections: ['second'],
-  );
-  di.set('second', () => 'second');
+    dependencies: ['second'],
+  ));
+  di.set(D('second', () => 'second'));
 
-  di.set('second', () => 'another second', context: 'another');
-  di.set('third', () => 'another third', context: 'another');
+  di.set(D('second', () => 'another second'), context: 'another');
+  di.set(D('third', () => 'another third'), context: 'another');
 
   group('Utopia DI', () {
     test('resource', () async {
@@ -36,7 +36,7 @@ void main() async {
           isA<Exception>().having(
             (error) => error.toString(),
             '',
-            'Exception: Failed to find resource: "third"',
+            'Exception: Failed to find dependency: "third"',
           ),
         ),
       );

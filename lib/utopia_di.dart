@@ -6,3 +6,5 @@ library utopia_di;
 export 'src/di.dart';
 export 'src/hook.dart';
 export 'src/param.dart';
+export 'src/dependency.dart';
+export 'src/container.dart';
