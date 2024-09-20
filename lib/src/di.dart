@@ -1,4 +1,7 @@
-import 'resource_callback.dart';
+import 'dart:collection';
+
+import 'dependency.dart';
+import 'container.dart';
 
 /// Dependency injection
 ///
@@ -10,8 +13,12 @@ import 'resource_callback.dart';
 class DI {
   static const defaultContext = 'utopia';
   static DI? _instance;
-  final Map<String, Map<String, dynamic>> _resources = {};
-  final Map<String, Map<String, ResourceCallback>> _resourceCallbacks = {};
+
+  final Map<String, Container> _containers = HashMap();
+
+  DI() {
+    _containers[defaultContext] = Container();
+  }
 
   /// Get singleton instance
   static DI get instance {
@@ -23,15 +30,13 @@ class DI {
   static DI get i => DI.instance;
 
   /// Set a resource callback
-  void set(
-    String name,
-    Function callback, {
-    List<String> injections = const [],
+  DI set(
+    Dependency dependency, {
     String context = defaultContext,
   }) {
-    _resourceCallbacks[context] ??= {};
-    _resourceCallbacks[context]![name] =
-        ResourceCallback(name, injections, callback, reset: true);
+    _containers[context] ??= Container();
+    _containers[context]!.set(dependency);
+    return this;
   }
 
   /// Get all the resources set in the context
@@ -50,47 +55,30 @@ class DI {
   /// Get a resource
   dynamic get<T>(String name,
       {String context = defaultContext, bool fresh = false}) {
-    _resources[context] ??= <String, dynamic>{};
-    _resourceCallbacks[context] ??= {};
+    if (!_containers.containsKey(context)) {
+      throw Exception('Context $context does not exist.');
+    }
 
-    final resources = _resources[context]!;
-    var resourceCallbacks = _resourceCallbacks[context]!;
-    if (resourceCallbacks.isEmpty || resourceCallbacks[name] == null) {
-      // use default context when not found in the context
-      resourceCallbacks = _resourceCallbacks[defaultContext] ?? {};
+    if (fresh) {
+      _containers[context]!.refresh(name);
     }
-    if (resources[name] == null ||
-        fresh ||
-        (resourceCallbacks[name]?.reset ?? true)) {
-      if (resourceCallbacks[name] == null) {
-        throw Exception('Failed to find resource: "$name"');
-      }
-
-      final params = getAll(resourceCallbacks[name]!.injections);
-      resources[name] = Function.apply(
-        resourceCallbacks[name]!.callback,
-        [...params.values],
-      );
-    }
-    resourceCallbacks[name] = resourceCallbacks[name]!.copyWith(reset: false);
-    final resource = resources[name];
-    if (resource is T) {
-      return resource;
-    }
-    throw Exception('Resource type doesn\'t match');
+    return _containers[context]!.get<T>(name);
   }
 
-  /// Reset cached resources
-  void resetResources([String? context]) {
-    if (context != null) {
-      (_resources[context] ?? {}).clear();
-      return;
-    }
-    _resources.clear();
+  Container? getContainer(String context) {
+    return _containers[context];
   }
 
-  /// Resets all the dependencies
-  void reset() {
-    _resourceCallbacks.clear();
+  DI resetContext(String context) {
+    if (_containers.containsKey(context)) {
+      _containers.remove(context);
+    }
+    return this;
+  }
+
+  DI reset() {
+    _containers.clear();
+    _containers[defaultContext] = Container();
+    return this;
   }
 }

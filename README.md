@@ -30,7 +30,7 @@ void main() {
   di.setResource(
     'dependentResource',
     (String resource1, int number1) => '$resource1 and $number1',
-    injections: ['resource1', 'number1'],
+    dependencies: ['resource1', 'number1'],
   );
 
   print(di.getResource('resource1'));
