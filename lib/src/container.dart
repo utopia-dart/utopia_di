@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:utopia_di/utopia_di.dart';
+import 'dependency.dart';
 
 class Container {
   // Store dependencies and instances
