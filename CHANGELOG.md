@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Refactor, the implementation is now more elegant with `Container` and `Dependency` classes
+
 ## 0.2.1
 
 - Fix issues caused by static properties
