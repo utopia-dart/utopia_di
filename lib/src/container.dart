@@ -24,7 +24,7 @@ class Container {
   }
 
   // Get a dependency
-  dynamic get<T>(String name) {
+  T get<T>(String name) {
     if (!has(name)) {
       throw Exception('Failed to find dependency: "$name"');
     }

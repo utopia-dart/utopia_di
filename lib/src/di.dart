@@ -50,10 +50,10 @@ class DI {
   }
 
   /// Get a resource
-  dynamic g<T>(String name, {bool fresh = false}) => get<T>(name, fresh: fresh);
+  T g<T>(String name, {bool fresh = false}) => get<T>(name, fresh: fresh);
 
   /// Get a resource
-  dynamic get<T>(String name,
+  T get<T>(String name,
       {String context = defaultContext, bool fresh = false}) {
     if (!_containers.containsKey(context)) {
       throw Exception('Context $context does not exist.');
